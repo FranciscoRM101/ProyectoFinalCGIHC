@@ -62,6 +62,8 @@ float rotalas;
 float rotalasOffset;
 bool diralas = true;
 
+
+
 Window mainWindow;
 std::vector<Mesh*> meshList;
 std::vector<Shader> shaderList;
@@ -227,14 +229,22 @@ void CreateObjects()
 	   0, 2, 3,
 	};
 
+
+	/// Dividirlo en 4 y no en 3
+	//GLfloat numeroVertices[] = {
+	//	//     x      y      z         u       v           nx     ny     nz
+	//	-0.5f, 0.0f, 0.5f,     0.0f, 0.75f,     0.0f, -1.0f, 0.0f,
+	//	 0.5f, 0.0f, 0.5f,     0.25f, 0.75f,    0.0f, -1.0f, 0.0f,
+	//	 0.5f, 0.0f, -0.5f,    0.25f, 1.0f,     0.0f, -1.0f, 0.0f,
+	//	-0.5f, 0.0f, -0.5f,    0.0f, 1.0f,      0.0f, -1.0f, 0.0f,
+	//};
 	GLfloat numeroVertices[] = {
 		//     x      y      z         u       v           nx     ny     nz
-		-0.5f, 0.0f, 0.5f,     0.0f, 0.75f,     0.0f, -1.0f, 0.0f,
-		 0.5f, 0.0f, 0.5f,     0.25f, 0.75f,    0.0f, -1.0f, 0.0f,
-		 0.5f, 0.0f, -0.5f,    0.25f, 1.0f,     0.0f, -1.0f, 0.0f,
-		-0.5f, 0.0f, -0.5f,    0.0f, 1.0f,      0.0f, -1.0f, 0.0f,
+		-0.5f, 0.0f, 0.5f,     0.0f, 0.0f,      0.0f, -1.0f, 0.0f,  // esquina inferior izquierda
+		 0.5f, 0.0f, 0.5f,     1.0f / 16.0f, 0.0f, 0.0f, -1.0f, 0.0f, // esquina inferior derecha
+		 0.5f, 0.0f, -0.5f,    1.0f / 16.0f, 1.0f, 0.0f, -1.0f, 0.0f, // esquina superior derecha
+		-0.5f, 0.0f, -0.5f,    0.0f, 1.0f,      0.0f, -1.0f, 0.0f  // esquina superior izquierda
 	};
-
 
 	Mesh *obj1 = new Mesh();
 	obj1->CreateMesh(vertices, indices, 32, 12);
@@ -307,7 +317,7 @@ int main()
 	Numero2Texture = Texture("Textures/numero2.tga");
 	Numero2Texture.LoadTextureA();
 
-	letras = Texture("Textures/letras2.png");
+	letras = Texture("Textures/letras.png");
 	letras.LoadTextureA();
 
 	Kitt_M = Model();
@@ -387,6 +397,14 @@ int main()
 	rotacion = 0.0f;
 	rotalas = 0.0f;
 	rotalasOffset = 1.0f;
+
+
+	//toffsetnumerov = 1.0;
+
+
+	
+	toffsetnumerocambiau = 0.0f;
+	toffsetnumerov = 0.0f;
 
 	glm::vec3 lowerLight(0.0f,0.0f,0.0f);
 
@@ -734,43 +752,9 @@ int main()
 			Material_brillante.UseMaterial(uniformSpecularIntensity, uniformShininess);
 			meshList[6]->RenderMesh();
 		}
- 
-
-		//número cambiante 
-		/*
-		¿Cómo hacer para que sea a una velocidad visible?
-		*/
-
-		/*tiempoAcumulado += deltaTime;
-
-		if (tiempoAcumulado >= 60.0f) {
-			tiempoAcumulado -= 60.0f; 
-			toffsetnumerocambiau += 0.25f;
-			if (toffsetnumerocambiau >= 1.0f)
-				toffsetnumerocambiau = 0.0f;
-		}
-
-		toffsetnumerov = 0.0;
-		toffset = glm::vec2(toffsetnumerocambiau, toffsetnumerov);
-		model = glm::mat4(1.0);
-		model = glm::translate(model, glm::vec3(-10.0f, 10.0f, -6.0f));
-		model = glm::rotate(model, 90 * toRadians, glm::vec3(1.0f, 0.0f, 0.0f));
-		model = glm::scale(model, glm::vec3(3.0f, 3.0f, 3.0f));
-		glUniform2fv(uniformTextureOffset, 1, glm::value_ptr(toffset));
-		glUniformMatrix4fv(uniformModel, 1, GL_FALSE, glm::value_ptr(model));
-		color = glm::vec3(1.0f, 1.0f, 1.0f);
-		glUniform3fv(uniformColor, 1, glm::value_ptr(color));
-		NumerosTexture.UseTexture();
-		Material_brillante.UseMaterial(uniformSpecularIntensity, uniformShininess);
-		meshList[6]->RenderMesh();*/
 
 
-
-		//número cambiante 
-		/*
-		¿Cómo hacer para que sea a una velocidad visible?
-		*/
-		/*toffsetnumerocambiau += 0.25;
+		toffsetnumerocambiau += 0.25 * deltaTime * 0.0025;
 		if (toffsetnumerocambiau > 1.0)
 			toffsetnumerocambiau = 0.0;
 		toffsetnumerov = 0.0;
@@ -783,36 +767,34 @@ int main()
 		glUniformMatrix4fv(uniformModel, 1, GL_FALSE, glm::value_ptr(model));
 		color = glm::vec3(1.0f, 1.0f, 1.0f);
 		glUniform3fv(uniformColor, 1, glm::value_ptr(color));
-		NumerosTexture.UseTexture();
-		Material_brillante.UseMaterial(uniformSpecularIntensity, uniformShininess);
-		meshList[6]->RenderMesh();*/
-
-
-		toffsetnumerocambiau += 0.25f;
-		if (toffsetnumerocambiau > 1.0f)
-			toffsetnumerocambiau = 0.0f;
-
-		// Ahora la textura está dividida en 4 partes verticales (4 filas)
-		// Cada una ocupa 1/4 = 0.25 del eje V
-		toffsetnumerov = (3.0f / 4.0f) + 0.001f; // Usa 3/4 si la fila superior es la primera
-		// o usa 0.0f si la fila inferior es la primera
-
-		toffset = glm::vec2(toffsetnumerocambiau, toffsetnumerov);
-
-		model = glm::mat4(1.0);
-		model = glm::translate(model, glm::vec3(-10.0f, 10.0f, -6.0f));
-		model = glm::rotate(model, 90 * toRadians, glm::vec3(1.0f, 0.0f, 0.0f));
-		model = glm::scale(model, glm::vec3(3.0f, 3.0f, 3.0f));
-
-		glUniform2fv(uniformTextureOffset, 1, glm::value_ptr(toffset));
-		glUniformMatrix4fv(uniformModel, 1, GL_FALSE, glm::value_ptr(model));
-
-		color = glm::vec3(1.0f, 1.0f, 1.0f);
-		glUniform3fv(uniformColor, 1, glm::value_ptr(color));
-
 		letras.UseTexture();
 		Material_brillante.UseMaterial(uniformSpecularIntensity, uniformShininess);
 		meshList[6]->RenderMesh();
+
+
+
+		toffsetnumerocambiau += 0.25 * deltaTime * 0.0025;
+		if (toffsetnumerocambiau > 1.0)
+			toffsetnumerocambiau = 0.0;
+		toffsetnumerov = 0.0;
+		toffset = glm::vec2(toffsetnumerocambiau+1.0/16.0, toffsetnumerov);
+		model = glm::mat4(1.0);
+		model = glm::translate(model, glm::vec3(-7.0f, 10.0f, -6.0f));
+		model = glm::rotate(model, 90 * toRadians, glm::vec3(1.0f, 0.0f, 0.0f));
+		model = glm::scale(model, glm::vec3(3.0f, 3.0f, 3.0f));
+		glUniform2fv(uniformTextureOffset, 1, glm::value_ptr(toffset));
+		glUniformMatrix4fv(uniformModel, 1, GL_FALSE, glm::value_ptr(model));
+		color = glm::vec3(1.0f, 1.0f, 1.0f);
+		glUniform3fv(uniformColor, 1, glm::value_ptr(color));
+		letras.UseTexture();
+		Material_brillante.UseMaterial(uniformSpecularIntensity, uniformShininess);
+		meshList[6]->RenderMesh();
+
+
+
+
+
+
 
 
 
