@@ -77,7 +77,7 @@ Texture FlechaTexture;
 Texture NumerosTexture;
 Texture Numero1Texture;
 Texture Numero2Texture;
-
+Texture letras;
 
 
 Model Kitt_M;
@@ -88,6 +88,9 @@ Skybox skybox;
 
 Model alaizq;
 Model alader;
+
+Model megacaja1;
+
 
 //materiales
 Material Material_brillante;
@@ -225,12 +228,13 @@ void CreateObjects()
 	};
 
 	GLfloat numeroVertices[] = {
-		-0.5f, 0.0f, 0.5f,		0.0f, 0.67f,		0.0f, -1.0f, 0.0f,
-		0.5f, 0.0f, 0.5f,		0.25f, 0.67f,		0.0f, -1.0f, 0.0f,
-		0.5f, 0.0f, -0.5f,		0.25f, 1.0f,		0.0f, -1.0f, 0.0f,
-		-0.5f, 0.0f, -0.5f,		0.0f, 1.0f,		0.0f, -1.0f, 0.0f,
-
+		//     x      y      z         u       v           nx     ny     nz
+		-0.5f, 0.0f, 0.5f,     0.0f, 0.75f,     0.0f, -1.0f, 0.0f,
+		 0.5f, 0.0f, 0.5f,     0.25f, 0.75f,    0.0f, -1.0f, 0.0f,
+		 0.5f, 0.0f, -0.5f,    0.25f, 1.0f,     0.0f, -1.0f, 0.0f,
+		-0.5f, 0.0f, -0.5f,    0.0f, 1.0f,      0.0f, -1.0f, 0.0f,
 	};
+
 
 	Mesh *obj1 = new Mesh();
 	obj1->CreateMesh(vertices, indices, 32, 12);
@@ -303,6 +307,8 @@ int main()
 	Numero2Texture = Texture("Textures/numero2.tga");
 	Numero2Texture.LoadTextureA();
 
+	letras = Texture("Textures/letras2.png");
+	letras.LoadTextureA();
 
 	Kitt_M = Model();
 	Kitt_M.LoadModel("Models/kitt_optimizado.obj");
@@ -316,6 +322,9 @@ int main()
 	alaizq.LoadModel("Models/alaizq.obj");
 	alader = Model();
 	alader.LoadModel("Models/alader.obj");
+
+	megacaja1 = Model();
+	megacaja1.LoadModel("Models/MEGACAJAARRIBA.fbx");
 
 	std::vector<std::string> skyboxFaces;
 	skyboxFaces.push_back("Textures/Skybox/cupertin-lake_rt.tga");
@@ -732,7 +741,7 @@ int main()
 		¿Cómo hacer para que sea a una velocidad visible?
 		*/
 
-		tiempoAcumulado += deltaTime;
+		/*tiempoAcumulado += deltaTime;
 
 		if (tiempoAcumulado >= 60.0f) {
 			tiempoAcumulado -= 60.0f; 
@@ -753,7 +762,58 @@ int main()
 		glUniform3fv(uniformColor, 1, glm::value_ptr(color));
 		NumerosTexture.UseTexture();
 		Material_brillante.UseMaterial(uniformSpecularIntensity, uniformShininess);
+		meshList[6]->RenderMesh();*/
+
+
+
+		//número cambiante 
+		/*
+		¿Cómo hacer para que sea a una velocidad visible?
+		*/
+		/*toffsetnumerocambiau += 0.25;
+		if (toffsetnumerocambiau > 1.0)
+			toffsetnumerocambiau = 0.0;
+		toffsetnumerov = 0.0;
+		toffset = glm::vec2(toffsetnumerocambiau, toffsetnumerov);
+		model = glm::mat4(1.0);
+		model = glm::translate(model, glm::vec3(-10.0f, 10.0f, -6.0f));
+		model = glm::rotate(model, 90 * toRadians, glm::vec3(1.0f, 0.0f, 0.0f));
+		model = glm::scale(model, glm::vec3(3.0f, 3.0f, 3.0f));
+		glUniform2fv(uniformTextureOffset, 1, glm::value_ptr(toffset));
+		glUniformMatrix4fv(uniformModel, 1, GL_FALSE, glm::value_ptr(model));
+		color = glm::vec3(1.0f, 1.0f, 1.0f);
+		glUniform3fv(uniformColor, 1, glm::value_ptr(color));
+		NumerosTexture.UseTexture();
+		Material_brillante.UseMaterial(uniformSpecularIntensity, uniformShininess);
+		meshList[6]->RenderMesh();*/
+
+
+		toffsetnumerocambiau += 0.25f;
+		if (toffsetnumerocambiau > 1.0f)
+			toffsetnumerocambiau = 0.0f;
+
+		// Ahora la textura está dividida en 4 partes verticales (4 filas)
+		// Cada una ocupa 1/4 = 0.25 del eje V
+		toffsetnumerov = (3.0f / 4.0f) + 0.001f; // Usa 3/4 si la fila superior es la primera
+		// o usa 0.0f si la fila inferior es la primera
+
+		toffset = glm::vec2(toffsetnumerocambiau, toffsetnumerov);
+
+		model = glm::mat4(1.0);
+		model = glm::translate(model, glm::vec3(-10.0f, 10.0f, -6.0f));
+		model = glm::rotate(model, 90 * toRadians, glm::vec3(1.0f, 0.0f, 0.0f));
+		model = glm::scale(model, glm::vec3(3.0f, 3.0f, 3.0f));
+
+		glUniform2fv(uniformTextureOffset, 1, glm::value_ptr(toffset));
+		glUniformMatrix4fv(uniformModel, 1, GL_FALSE, glm::value_ptr(model));
+
+		color = glm::vec3(1.0f, 1.0f, 1.0f);
+		glUniform3fv(uniformColor, 1, glm::value_ptr(color));
+
+		letras.UseTexture();
+		Material_brillante.UseMaterial(uniformSpecularIntensity, uniformShininess);
 		meshList[6]->RenderMesh();
+
 
 
 
@@ -808,6 +868,19 @@ int main()
 		Material_brillante.UseMaterial(uniformSpecularIntensity, uniformShininess);
 		meshList[5]->RenderMesh();
 
+
+
+		//MEGACAJA
+		model = glm::mat4(1.0);
+		model = glm::translate(model, glm::vec3(0.0f, 20.0f, 0.0f));
+		//model = glm::scale(model, glm::vec3(0.3f, 0.3f, 0.3f));
+		//model = glm::rotate(model, 180 * toRadians, glm::vec3(0.0f, 1.0f, 0.0f));
+		//model = glm::rotate(model, rotacion * toRadians, glm::vec3(0.0f, 1.0f, 0.0f));
+
+		//Material_brillante.UseMaterial(uniformSpecularIntensity, uniformShininess);
+	
+		glUniformMatrix4fv(uniformModel, 1, GL_FALSE, glm::value_ptr(model));
+		megacaja1.RenderModel();
 
 
 
