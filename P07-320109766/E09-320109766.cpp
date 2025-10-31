@@ -94,6 +94,9 @@ Model alader;
 Model megacaja1;
 
 
+Model puerta;
+Model arco;
+
 //materiales
 Material Material_brillante;
 Material Material_opaco;
@@ -336,6 +339,13 @@ int main()
 	megacaja1 = Model();
 	megacaja1.LoadModel("Models/MEGACAJAARRIBA.fbx");
 
+
+	puerta = Model();
+	puerta.LoadModel("Models/puerta4.obj");
+	arco = Model();
+	arco.LoadModel("Models/arcop09.obj");
+
+
 	std::vector<std::string> skyboxFaces;
 	skyboxFaces.push_back("Textures/Skybox/cupertin-lake_rt.tga");
 	skyboxFaces.push_back("Textures/Skybox/cupertin-lake_lf.tga");
@@ -553,7 +563,7 @@ int main()
 
 		glUniform2fv(uniformTextureOffset, 1, glm::value_ptr(toffset));
 		model = glm::mat4(1.0);
-		model = glm::translate(model, glm::vec3(0.0f, -2.0f, 0.0f));
+		model = glm::translate(model, glm::vec3(0.0f, -0.2f, 0.0f));
 		model = glm::scale(model, glm::vec3(30.0f, 1.0f, 30.0f));
 		glUniformMatrix4fv(uniformModel, 1, GL_FALSE, glm::value_ptr(model));
 		glUniform3fv(uniformColor, 1, glm::value_ptr(color));
@@ -565,83 +575,74 @@ int main()
 
 
 
-		//Instancia del coche 
-		model = glm::mat4(1.0);
-		model = glm::translate(model, glm::vec3(movCoche - 50.0f, -0.2f, -2.0f));
-		modelaux = model;
-		model = glm::scale(model, glm::vec3(0.5f, 0.5f, 0.5f));
-		model = glm::rotate(model, -90 * toRadians, glm::vec3(0.0f, 1.0f, 0.0f));
-		glUniformMatrix4fv(uniformModel, 1, GL_FALSE, glm::value_ptr(model));
-		Kitt_M.RenderModel();
 
-		//Llanta delantera izquierda
-		model = modelaux;
-		model = glm::translate(model, glm::vec3(7.0f, -0.5f, 8.0f));
-		model = glm::rotate(model, -90 * toRadians, glm::vec3(0.0f, 1.0f, 0.0f));
-		model = glm::rotate(model, rotllanta * toRadians, glm::vec3(1.0f, 0.0f, 0.0f));
-		model = glm::scale(model, glm::vec3(0.4f, 0.4f, 0.4f));
-		color = glm::vec3(0.5f, 0.5f, 0.5f);//llanta con color gris
+
+		//Arco
+		model = glm::mat4(1.0);
+		model = glm::translate(model, glm::vec3(0.0f, 0.0f, 0.0f));
+		//modelaux = model;
+		model = glm::rotate(model, 180 * toRadians, glm::vec3(0.0f, 1.0f, 0.0f));
+	    modelaux = model;
+		model = glm::scale(model, glm::vec3(10.0f, 6.0f, 7.0f));
+		color = glm::vec3(1.0f, 1.0f, 1.0f);
 		glUniform3fv(uniformColor, 1, glm::value_ptr(color));
 		glUniformMatrix4fv(uniformModel, 1, GL_FALSE, glm::value_ptr(model));
-		Llanta_M.RenderModel();
+		arco.RenderModel();
 
-		//Llanta trasera izquierda
+
+
+
+
+
+
+		//Reja 1
 		model = modelaux;
-		model = glm::translate(model, glm::vec3(15.5f, -0.5f, 8.0f));
-		model = glm::rotate(model, -90 * toRadians, glm::vec3(0.0f, 1.0f, 0.0f));
-		model = glm::rotate(model, rotllanta * toRadians, glm::vec3(1.0f, 0.0f, 0.0f));
-		model = glm::scale(model, glm::vec3(0.4f, 0.4f, 0.4f));
-		glUniformMatrix4fv(uniformModel, 1, GL_FALSE, glm::value_ptr(model));
-		Llanta_M.RenderModel();
-
-		//Llanta delantera derecha
-		model = modelaux;
-		model = glm::translate(model, glm::vec3(7.0f, -0.5f, 1.5f));
-		model = glm::rotate(model, 90 * toRadians, glm::vec3(0.0f, 1.0f, 0.0f));
-		model = glm::rotate(model, -rotllanta * toRadians, glm::vec3(1.0f, 0.0f, 0.0f));
-		model = glm::scale(model, glm::vec3(0.4f, 0.4f, 0.4f));
-		glUniformMatrix4fv(uniformModel, 1, GL_FALSE, glm::value_ptr(model));
-		Llanta_M.RenderModel();
-
-		//Llanta trasera derecha
-		model = modelaux;
-		model = glm::translate(model, glm::vec3(15.5f, -0.5f, 1.5f));
-		model = glm::rotate(model, 90 * toRadians, glm::vec3(0.0f, 1.0f, 0.0f));
-		model = glm::rotate(model, -rotllanta * toRadians, glm::vec3(1.0f, 0.0f, 0.0f));
-		model = glm::scale(model, glm::vec3(0.4f, 0.4f, 0.4f));
-		glUniformMatrix4fv(uniformModel, 1, GL_FALSE, glm::value_ptr(model));
-		Llanta_M.RenderModel();
-
-
-		//dragonavance para moverlo hacia adelante y atrás en X
-		model = glm::mat4(1.0);
-		model = glm::translate(model, glm::vec3(0.05f + dragonavance, 5.0f + sin(glm::radians(angulovaria)), 6.0));
-		model = glm::scale(model, glm::vec3(0.3f, 0.3f, 0.3f));
+		model = glm::translate(model, glm::vec3(6.0f, 0.5f, 0.0f));
+		model = glm::scale(model, glm::vec3(0.03f, 0.03f, 0.03f));
 		model = glm::rotate(model, 180 * toRadians, glm::vec3(0.0f, 1.0f, 0.0f));
-		model = glm::rotate(model, rotacion * toRadians, glm::vec3(0.0f, 1.0f, 0.0f));
-		modelaux = model;
-		Material_brillante.UseMaterial(uniformSpecularIntensity, uniformShininess);
-		/*color = glm::vec3(0.0f, 1.0f, 0.0f);
-		glUniform3fv(uniformColor, 1, glm::value_ptr(color));*/
 		glUniformMatrix4fv(uniformModel, 1, GL_FALSE, glm::value_ptr(model));
-		Dragon_M.RenderModel();
+		puerta.RenderModel();
+
+
+		//Reja 2
+		model = modelaux;
+		model = glm::translate(model, glm::vec3(-7, 0.5f, 0.0f));
+		//modelaux = model;
+		model = glm::scale(model, glm::vec3(0.03f, 0.03f, 0.03f));
+		//model = glm::rotate(model, -90 * toRadians, glm::vec3(0.0f, 1.0f, 0.0f));
+		glUniformMatrix4fv(uniformModel, 1, GL_FALSE, glm::value_ptr(model));
+		puerta.RenderModel();
 		
 
-		//ala izq
-		model = modelaux;
-		model = glm::translate(model, glm::vec3(0.0f, 2.8f, 0.0f));
-		model = glm::rotate(model, rotalas * toRadians, glm::vec3(1.0f, 0.0f, 0.0f));
-		glUniformMatrix4fv(uniformModel, 1, GL_FALSE, glm::value_ptr(model));
-		alaizq.RenderModel();
+		////dragonavance para moverlo hacia adelante y atrás en X
+		//model = glm::mat4(1.0);
+		//model = glm::translate(model, glm::vec3(0.05f + dragonavance, 5.0f + sin(glm::radians(angulovaria)), 6.0));
+		//model = glm::scale(model, glm::vec3(0.3f, 0.3f, 0.3f));
+		//model = glm::rotate(model, 180 * toRadians, glm::vec3(0.0f, 1.0f, 0.0f));
+		//model = glm::rotate(model, rotacion * toRadians, glm::vec3(0.0f, 1.0f, 0.0f));
+		//modelaux = model;
+		//Material_brillante.UseMaterial(uniformSpecularIntensity, uniformShininess);
+		///*color = glm::vec3(0.0f, 1.0f, 0.0f);
+		//glUniform3fv(uniformColor, 1, glm::value_ptr(color));*/
+		//glUniformMatrix4fv(uniformModel, 1, GL_FALSE, glm::value_ptr(model));
+		//Dragon_M.RenderModel();
+		//
+
+		////ala izq
+		//model = modelaux;
+		//model = glm::translate(model, glm::vec3(0.0f, 2.8f, 0.0f));
+		//model = glm::rotate(model, rotalas * toRadians, glm::vec3(1.0f, 0.0f, 0.0f));
+		//glUniformMatrix4fv(uniformModel, 1, GL_FALSE, glm::value_ptr(model));
+		//alaizq.RenderModel();
 
 
 
-		//ala der
-		model = modelaux;
-		model = glm::translate(model, glm::vec3(0.0f, 2.8f, 0.0f));
-		model = glm::rotate(model, -rotalas * toRadians, glm::vec3(1.0f, 0.0f, 0.0f));
-		glUniformMatrix4fv(uniformModel, 1, GL_FALSE, glm::value_ptr(model));
-		alader.RenderModel();
+		////ala der
+		//model = modelaux;
+		//model = glm::translate(model, glm::vec3(0.0f, 2.8f, 0.0f));
+		//model = glm::rotate(model, -rotalas * toRadians, glm::vec3(1.0f, 0.0f, 0.0f));
+		//glUniformMatrix4fv(uniformModel, 1, GL_FALSE, glm::value_ptr(model));
+		//alader.RenderModel();
 
 
 		/*color = glm::vec3(1.0f, 1.0f, 1.0f);
@@ -683,75 +684,26 @@ int main()
 		Material_brillante.UseMaterial(uniformSpecularIntensity, uniformShininess);
 		meshList[4]->RenderMesh();
 
-		//plano con todos los números
-		toffsetnumerou = 0.0;
+		
+		
+		toffsetnumerocambiau += 0.25 * deltaTime * 0.0025;
+		if (toffsetnumerocambiau > 1.0)
+			toffsetnumerocambiau = 0.0;
 		toffsetnumerov = 0.0;
-		toffset = glm::vec2(toffsetnumerou, toffsetnumerov);
-		model = glm::mat4(1.0);
-		model = glm::translate(model, glm::vec3(-6.0f, 2.0f, -6.0f));
-		model = glm::rotate(model, 90 * toRadians, glm::vec3(1.0f, 0.0f, 0.0f));
+		toffset = glm::vec2(toffsetnumerocambiau-2.0/16.0, toffsetnumerov);
+		model = modelaux;
+		model = glm::translate(model, glm::vec3(3.0f, 15.5f, -0.5f));
+		model = glm::rotate(model, -90 * toRadians, glm::vec3(1.0f, 0.0f, 0.0f));
+		model = glm::rotate(model, 180 * toRadians, glm::vec3(0.0f, 1.0f, 0.0f));
 		model = glm::scale(model, glm::vec3(3.0f, 3.0f, 3.0f));
 		glUniform2fv(uniformTextureOffset, 1, glm::value_ptr(toffset));
 		glUniformMatrix4fv(uniformModel, 1, GL_FALSE, glm::value_ptr(model));
 		color = glm::vec3(1.0f, 1.0f, 1.0f);
 		glUniform3fv(uniformColor, 1, glm::value_ptr(color));
-		NumerosTexture.UseTexture();
-		Material_brillante.UseMaterial(uniformSpecularIntensity, uniformShininess);
-		meshList[5]->RenderMesh();
-
-		//número 1
-		//toffsetnumerou = 0.0;
-		//toffsetnumerov = 0.0;
-		model = glm::mat4(1.0);
-		model = glm::translate(model, glm::vec3(-10.0f, 2.0f, -6.0f));
-		model = glm::rotate(model, 90 * toRadians, glm::vec3(1.0f, 0.0f, 0.0f));
-		model = glm::scale(model, glm::vec3(3.0f, 3.0f, 3.0f));
-		//glUniform2fv(uniformTextureOffset, 1, glm::value_ptr(toffset));
-		glUniformMatrix4fv(uniformModel, 1, GL_FALSE, glm::value_ptr(model));
-		color = glm::vec3(1.0f, 1.0f, 1.0f);
-		glUniform3fv(uniformColor, 1, glm::value_ptr(color));
-		NumerosTexture.UseTexture();
+		letras.UseTexture();
 		Material_brillante.UseMaterial(uniformSpecularIntensity, uniformShininess);
 		meshList[6]->RenderMesh();
 
-		for (int i = 1; i<4; i++)
-		{
-			//números 2-4
-			toffsetnumerou += 0.25;
-			toffsetnumerov = 0.0;
-			toffset = glm::vec2(toffsetnumerou, toffsetnumerov);
-			model = glm::mat4(1.0);
-			model = glm::translate(model, glm::vec3(-10.0f - (i * 3.0), 2.0f, -6.0f));
-			model = glm::rotate(model, 90 * toRadians, glm::vec3(1.0f, 0.0f, 0.0f));
-			model = glm::scale(model, glm::vec3(3.0f, 3.0f, 3.0f));
-			glUniform2fv(uniformTextureOffset, 1, glm::value_ptr(toffset));
-			glUniformMatrix4fv(uniformModel, 1, GL_FALSE, glm::value_ptr(model));
-			color = glm::vec3(1.0f, 1.0f, 1.0f);
-			glUniform3fv(uniformColor, 1, glm::value_ptr(color));
-			NumerosTexture.UseTexture();
-			Material_brillante.UseMaterial(uniformSpecularIntensity, uniformShininess);
-			meshList[6]->RenderMesh();
-
-		 }
-
-		for (int j = 1; j < 5; j++)
-		{
-			//números 5-8
-			toffsetnumerou += 0.25;
-			toffsetnumerov = -0.33;
-			toffset = glm::vec2(toffsetnumerou, toffsetnumerov);
-			model = glm::mat4(1.0);
-			model = glm::translate(model, glm::vec3(-7.0f - (j * 3.0), 5.0f, -6.0f));
-			model = glm::rotate(model, 90 * toRadians, glm::vec3(1.0f, 0.0f, 0.0f));
-			model = glm::scale(model, glm::vec3(3.0f, 3.0f, 3.0f));
-			glUniform2fv(uniformTextureOffset, 1, glm::value_ptr(toffset));
-			glUniformMatrix4fv(uniformModel, 1, GL_FALSE, glm::value_ptr(model));
-			color = glm::vec3(1.0f, 1.0f, 1.0f);
-			glUniform3fv(uniformColor, 1, glm::value_ptr(color));
-			NumerosTexture.UseTexture();
-			Material_brillante.UseMaterial(uniformSpecularIntensity, uniformShininess);
-			meshList[6]->RenderMesh();
-		}
 
 
 		toffsetnumerocambiau += 0.25 * deltaTime * 0.0025;
@@ -759,9 +711,10 @@ int main()
 			toffsetnumerocambiau = 0.0;
 		toffsetnumerov = 0.0;
 		toffset = glm::vec2(toffsetnumerocambiau, toffsetnumerov);
-		model = glm::mat4(1.0);
-		model = glm::translate(model, glm::vec3(-10.0f, 10.0f, -6.0f));
-		model = glm::rotate(model, 90 * toRadians, glm::vec3(1.0f, 0.0f, 0.0f));
+		model = modelaux;
+		model = glm::translate(model, glm::vec3(-3.0f, 15.5f, -0.5f));
+		model = glm::rotate(model, -90 * toRadians, glm::vec3(1.0f, 0.0f, 0.0f));
+		model = glm::rotate(model, 180 * toRadians, glm::vec3(0.0f, 1.0f, 0.0f));
 		model = glm::scale(model, glm::vec3(3.0f, 3.0f, 3.0f));
 		glUniform2fv(uniformTextureOffset, 1, glm::value_ptr(toffset));
 		glUniformMatrix4fv(uniformModel, 1, GL_FALSE, glm::value_ptr(model));
@@ -777,10 +730,11 @@ int main()
 		if (toffsetnumerocambiau > 1.0)
 			toffsetnumerocambiau = 0.0;
 		toffsetnumerov = 0.0;
-		toffset = glm::vec2(toffsetnumerocambiau+1.0/16.0, toffsetnumerov);
-		model = glm::mat4(1.0);
-		model = glm::translate(model, glm::vec3(-7.0f, 10.0f, -6.0f));
-		model = glm::rotate(model, 90 * toRadians, glm::vec3(1.0f, 0.0f, 0.0f));
+		toffset = glm::vec2(toffsetnumerocambiau-1.0/16.0, toffsetnumerov);
+		model = modelaux;
+		model = glm::translate(model, glm::vec3(0.0f, 15.5f, -0.5f));
+		model = glm::rotate(model, -90 * toRadians, glm::vec3(1.0f, 0.0f, 0.0f));
+		model = glm::rotate(model, 180 * toRadians, glm::vec3(0.0f, 1.0f, 0.0f));
 		model = glm::scale(model, glm::vec3(3.0f, 3.0f, 3.0f));
 		glUniform2fv(uniformTextureOffset, 1, glm::value_ptr(toffset));
 		glUniformMatrix4fv(uniformModel, 1, GL_FALSE, glm::value_ptr(model));
@@ -798,71 +752,6 @@ int main()
 
 
 
-
-
-		//cambiar automáticamente entre textura número 1 y número 2
-
-		tiempoAcumulado2 += deltaTime;
-		if (tiempoAcumulado2 >= 50.0f) {
-			cambiar = !cambiar; 
-			tiempoAcumulado2 = 0;            
-		}
-
-		toffsetnumerou = 0.0;
-		toffsetnumerov = 0.0;
-		toffset = glm::vec2(toffsetnumerou, toffsetnumerov);
-		model = glm::mat4(1.0);
-		model = glm::translate(model, glm::vec3(-13.0f, 10.0f, -6.0f));
-		model = glm::rotate(model, 90 * toRadians, glm::vec3(1.0f, 0.0f, 0.0f));
-		model = glm::scale(model, glm::vec3(3.0f, 3.0f, 3.0f));
-		glUniform2fv(uniformTextureOffset, 1, glm::value_ptr(toffset));
-		glUniformMatrix4fv(uniformModel, 1, GL_FALSE, glm::value_ptr(model));
-		color = glm::vec3(1.0f, 1.0f, 1.0f);
-		glUniform3fv(uniformColor, 1, glm::value_ptr(color));
-
-		if (cambiar) {
-			Numero1Texture.UseTexture();
-		}
-		else {
-			Numero2Texture.UseTexture();
-		}
-		
-
-		toffsetnumerou = 0.0;
-		toffsetnumerov = 0.0;
-		toffset = glm::vec2(toffsetnumerou, toffsetnumerov);
-		model = glm::mat4(1.0);
-		model = glm::translate(model, glm::vec3(-13.0f, 10.0f, -6.0f));
-		model = glm::rotate(model, 90 * toRadians, glm::vec3(1.0f, 0.0f, 0.0f));
-		model = glm::scale(model, glm::vec3(3.0f, 3.0f, 3.0f));
-		glUniform2fv(uniformTextureOffset, 1, glm::value_ptr(toffset));
-		glUniformMatrix4fv(uniformModel, 1, GL_FALSE, glm::value_ptr(model));
-		color = glm::vec3(1.0f, 1.0f, 1.0f);
-		glUniform3fv(uniformColor, 1, glm::value_ptr(color));
-
-		if (cambiar) {
-			Numero1Texture.UseTexture();
-		}
-		else {
-			Numero2Texture.UseTexture();
-		}
-
-		Material_brillante.UseMaterial(uniformSpecularIntensity, uniformShininess);
-		meshList[5]->RenderMesh();
-
-
-
-		//MEGACAJA
-		model = glm::mat4(1.0);
-		model = glm::translate(model, glm::vec3(0.0f, 20.0f, 0.0f));
-		//model = glm::scale(model, glm::vec3(0.3f, 0.3f, 0.3f));
-		//model = glm::rotate(model, 180 * toRadians, glm::vec3(0.0f, 1.0f, 0.0f));
-		//model = glm::rotate(model, rotacion * toRadians, glm::vec3(0.0f, 1.0f, 0.0f));
-
-		//Material_brillante.UseMaterial(uniformSpecularIntensity, uniformShininess);
-	
-		glUniformMatrix4fv(uniformModel, 1, GL_FALSE, glm::value_ptr(model));
-		megacaja1.RenderModel();
 
 
 
