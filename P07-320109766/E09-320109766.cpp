@@ -320,7 +320,7 @@ int main()
 	Numero2Texture = Texture("Textures/numero2.tga");
 	Numero2Texture.LoadTextureA();
 
-	letras = Texture("Textures/letras.png");
+	letras = Texture("Textures/letrasBS2.png");
 	letras.LoadTextureA();
 
 	Kitt_M = Model();
