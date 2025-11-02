@@ -17,6 +17,7 @@ Window::Window(GLint windowWidth, GLint windowHeight)
 	rotacion = 1.0f;
 	lucespuntuales = 0.0f;
 	luzprendida = true;
+	mover = false;
 	for (size_t i = 0; i < 1024; i++)
 	{
 		keys[i] = 0;
@@ -162,6 +163,20 @@ void Window::ManejaTeclado(GLFWwindow* window, int key, int code, int action, in
 	if (key == GLFW_KEY_P && action == GLFW_PRESS)
 	{
 		theWindow->luzprendida = !theWindow->luzprendida;
+	}
+
+
+	if (key == GLFW_KEY_M && action == GLFW_PRESS)
+	{
+		//theWindow->mover = GL_TRUE;
+		theWindow->mover = GL_TRUE;
+	}
+
+	
+	if (key == GLFW_KEY_N && action == GLFW_PRESS)
+	{
+		theWindow->mover = GL_FALSE;
+		//theWindow->mover = !theWindow->mover;
 	}
 
 	if (key >= 0 && key < 1024)

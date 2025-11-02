@@ -62,8 +62,10 @@ float rotalas;
 float rotalasOffset;
 bool diralas = true;
 
-
-
+float rotpuerta;
+float rotpuertaOffset;
+float despuerta;
+float despuertaOffset;
 Window mainWindow;
 std::vector<Mesh*> meshList;
 std::vector<Shader> shaderList;
@@ -96,6 +98,7 @@ Model megacaja1;
 
 Model puerta;
 Model arco;
+Model letrero;
 
 //materiales
 Material Material_brillante;
@@ -242,11 +245,11 @@ void CreateObjects()
 	//	-0.5f, 0.0f, -0.5f,    0.0f, 1.0f,      0.0f, -1.0f, 0.0f,
 	//};
 	GLfloat numeroVertices[] = {
-		//     x      y      z         u       v           nx     ny     nz
-		-0.5f, 0.0f, 0.5f,     0.0f, 0.0f,      0.0f, -1.0f, 0.0f,  // esquina inferior izquierda
-		 0.5f, 0.0f, 0.5f,     1.0f / 16.0f, 0.0f, 0.0f, -1.0f, 0.0f, // esquina inferior derecha
-		 0.5f, 0.0f, -0.5f,    1.0f / 16.0f, 1.0f, 0.0f, -1.0f, 0.0f, // esquina superior derecha
-		-0.5f, 0.0f, -0.5f,    0.0f, 1.0f,      0.0f, -1.0f, 0.0f  // esquina superior izquierda
+	//     x      y      z         u       v           nx     ny     nz
+		-0.5f, 0.0f, 0.5f,     0.0f, 0.0f,           0.0f, -1.0f, 0.0f, 
+		 0.5f, 0.0f, 0.5f,     1.0f / 16.0f, 0.0f,   0.0f, -1.0f, 0.0f, 
+		 0.5f, 0.0f, -0.5f,    1.0f / 16.0f, 1.0f,   0.0f, -1.0f, 0.0f, 
+		-0.5f, 0.0f, -0.5f,    0.0f, 1.0f,           0.0f, -1.0f, 0.0f  
 	};
 
 	Mesh *obj1 = new Mesh();
@@ -342,6 +345,8 @@ int main()
 
 	puerta = Model();
 	puerta.LoadModel("Models/puerta4.obj");
+	letrero = Model();
+	letrero.LoadModel("Models/letrero.obj");
 	arco = Model();
 	arco.LoadModel("Models/arcop09.obj");
 
@@ -407,7 +412,10 @@ int main()
 	rotacion = 0.0f;
 	rotalas = 0.0f;
 	rotalasOffset = 1.0f;
-
+	rotpuerta = 0.0f;
+	rotpuertaOffset = 1.0f;
+	despuerta = 0.0f;
+	despuertaOffset = 0.066f;
 
 	//toffsetnumerov = 1.0;
 
@@ -436,7 +444,7 @@ int main()
 
 
 		// direccion drago
-		if (dirdragon)
+		/*if (dirdragon)
 		{
 
 			if (dragonavance > -20.0f) {
@@ -458,12 +466,12 @@ int main()
 			}
 		}
 
-		rotacion = (dirdragon) ? 0.0f : 180.0f;
+		rotacion = (dirdragon) ? 0.0f : 180.0f;*/
 
 		// direccion alas
-		if (diralas)
+		/*if (diralas)
 		{
-			if (rotalas < 30.0f)
+			if (rotalas < 90.0f)
 			{
 				rotalas += rotalasOffset * deltaTime;
 			}
@@ -474,7 +482,7 @@ int main()
 		}
 		else
 		{
-			if (rotalas > -30.0f)
+			if (rotalas > 0.0f)
 			{
 				rotalas -= rotalasOffset * deltaTime;
 			}
@@ -482,10 +490,42 @@ int main()
 			{
 				diralas = !diralas;
 			}
+		}*/
+
+
+		// Movimiento rotacion 
+		if ( mainWindow.getMover() ) {
+			if (rotpuerta > -90.0f)
+			{
+				rotpuerta -= rotpuertaOffset * deltaTime;
+				
+			}
 		}
-
-
+		else {
+			if (rotpuerta < 0.0f)
+			{
+				rotpuerta += rotpuertaOffset * deltaTime;
+				
+			}
+		}
 		
+		// Movimiento traslacion
+		if (mainWindow.getMover()) {
+			if (despuerta < 6.0f)
+			{
+				despuerta += despuertaOffset * deltaTime;
+				
+			}
+		}
+		else {
+			if (despuerta > 0.0f)
+			{
+				despuerta -= despuertaOffset * deltaTime;
+
+			}
+		}
+		
+
 
 		//dragonavance  -= 0.1f * deltaTime;
 		/* Animación en Loop Se ejecuta de forma continua mientras la aplicación está activa
@@ -493,7 +533,7 @@ int main()
 		deben de ser el mismo, o agregar elementos para que no se vea que los modelos desaparecen
 		o aparecen de la nada.
 		*/
-		if (avanza)
+		/*if (avanza)
 		{
 			if (movCoche > -250.0f)
 			{
@@ -517,7 +557,7 @@ int main()
 			{
 				avanza = !avanza;
 			}
-		}
+		}*/
 
 		//Recibir eventos del usuario
 		glfwPollEvents();
@@ -579,37 +619,38 @@ int main()
 
 		//Arco
 		model = glm::mat4(1.0);
-		model = glm::translate(model, glm::vec3(0.0f, 0.0f, 0.0f));
-		//modelaux = model;
+		model = glm::translate(model, glm::vec3(0.0f, 0.0f, -5.0f));
 		model = glm::rotate(model, 180 * toRadians, glm::vec3(0.0f, 1.0f, 0.0f));
 	    modelaux = model;
 		model = glm::scale(model, glm::vec3(10.0f, 6.0f, 7.0f));
-		color = glm::vec3(1.0f, 1.0f, 1.0f);
-		glUniform3fv(uniformColor, 1, glm::value_ptr(color));
 		glUniformMatrix4fv(uniformModel, 1, GL_FALSE, glm::value_ptr(model));
 		arco.RenderModel();
 
 
-
-
-
+		//Letrero
+		model = modelaux;
+		model = glm::rotate(model, 180 * toRadians, glm::vec3(0.0f, 1.0f, 0.0f));
+		model = glm::scale(model, glm::vec3(10.0f, 6.0f, 7.0f));
+		color = glm::vec3(1.0f, 1.0f, 1.0f);
+		glUniform3fv(uniformColor, 1, glm::value_ptr(color));
+		glUniformMatrix4fv(uniformModel, 1, GL_FALSE, glm::value_ptr(model));
+		letrero.RenderModel();
 
 
 		//Reja 1
 		model = modelaux;
 		model = glm::translate(model, glm::vec3(6.0f, 0.5f, 0.0f));
 		model = glm::scale(model, glm::vec3(0.03f, 0.03f, 0.03f));
-		model = glm::rotate(model, 180 * toRadians, glm::vec3(0.0f, 1.0f, 0.0f));
+		model = glm::rotate(model, 180 * toRadians, glm::vec3(0.0f, -1.0f, 0.0f));
+		model = glm::rotate(model, rotpuerta * toRadians, glm::vec3(0.0f, 1.0f, 0.0f));
 		glUniformMatrix4fv(uniformModel, 1, GL_FALSE, glm::value_ptr(model));
 		puerta.RenderModel();
 
 
 		//Reja 2
 		model = modelaux;
-		model = glm::translate(model, glm::vec3(-7, 0.5f, 0.0f));
-		//modelaux = model;
+		model = glm::translate(model, glm::vec3(-7-despuerta, 0.5f, 0.0f));
 		model = glm::scale(model, glm::vec3(0.03f, 0.03f, 0.03f));
-		//model = glm::rotate(model, -90 * toRadians, glm::vec3(0.0f, 1.0f, 0.0f));
 		glUniformMatrix4fv(uniformModel, 1, GL_FALSE, glm::value_ptr(model));
 		puerta.RenderModel();
 		
@@ -685,7 +726,7 @@ int main()
 		meshList[4]->RenderMesh();
 
 		
-		
+		// letrero 1
 		toffsetnumerocambiau += 0.25 * deltaTime * 0.0025;
 		if (toffsetnumerocambiau > 1.0)
 			toffsetnumerocambiau = 0.0;
@@ -705,7 +746,7 @@ int main()
 		meshList[6]->RenderMesh();
 
 
-
+		// letrero 2
 		toffsetnumerocambiau += 0.25 * deltaTime * 0.0025;
 		if (toffsetnumerocambiau > 1.0)
 			toffsetnumerocambiau = 0.0;
@@ -725,7 +766,7 @@ int main()
 		meshList[6]->RenderMesh();
 
 
-
+		// letrero 3
 		toffsetnumerocambiau += 0.25 * deltaTime * 0.0025;
 		if (toffsetnumerocambiau > 1.0)
 			toffsetnumerocambiau = 0.0;
