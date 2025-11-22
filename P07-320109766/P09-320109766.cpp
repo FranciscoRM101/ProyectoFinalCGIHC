@@ -93,7 +93,6 @@ Skybox skybox;
 Model alaizq;
 Model alader;
 
-Model megacaja1;
 
 
 Model puerta;
@@ -332,15 +331,12 @@ int main()
 	Llanta_M.LoadModel("Models/llanta_optimizada.obj");
 
 
-	Dragon_M = Model();
+	/*Dragon_M = Model();
 	Dragon_M.LoadModel("Models/cuerpodragon.obj");
 	alaizq = Model();
 	alaizq.LoadModel("Models/alaizq.obj");
 	alader = Model();
-	alader.LoadModel("Models/alader.obj");
-
-	megacaja1 = Model();
-	megacaja1.LoadModel("Models/MEGACAJAARRIBA.fbx");
+	alader.LoadModel("Models/alader.obj");*/
 
 
 	puerta = Model();
