@@ -48,6 +48,19 @@ float rotllanta;
 float rotllantaOffset;
 bool avanza;
 float angulovaria = 0.0f;
+float rotpuerta;
+float rotpuertaOffset;
+float despuerta;
+float despuertaOffset;
+float anguloEspada = 0.0f;     
+float velocidad;   
+
+float giroOsc = 0.0f;           // ángulo actual
+float velGiroOsc = 1.0f;       // grados por segundo
+int sentidoGiro = 1;            // 1 = sube, -1 = baja
+float limiteMin = 0.0f;
+float limiteMax = 30.0f;
+
 
 //variables para keyframes
 float reproduciranimacion, habilitaranimacion, guardoFrame, reinicioFrame, ciclo, ciclo2, contador = 0;
@@ -70,12 +83,28 @@ Texture FlechaTexture;
 
 
 
-Model Kitt_M;
-Model Llanta_M;
-Model Blackhawk_M;
+
+
+/////  Modelos proy final /////
+
+Model puerta;
+/// Cuarto 1 ///
 
 Model casa;
+Model sillon2;
+Model espada;
+Model mentita;
+Model mano;
+Model mesa;
+Model corona;
 
+/// Cuarto 2 ///
+
+Model lampara;
+Model guitar;
+Model bmo;
+Model refri;
+Model radio;
 
 Skybox skybox;
 
@@ -466,15 +495,51 @@ int main()
 	pisoTexture.LoadTextureA();
 
 
-	Kitt_M = Model();
-	Kitt_M.LoadModel("Models/kitt_optimizado.obj");
-	Llanta_M = Model();
-	Llanta_M.LoadModel("Models/llanta_optimizada.obj");
-	Blackhawk_M = Model();
-	Blackhawk_M.LoadModel("Models/uh60.obj");
+	// Proy final
+	puerta = Model();
+	puerta.LoadModel("Models/puertafinal.obj");
 
+
+	//cuarto 1
 	casa = Model();
 	casa.LoadModel("Models/casa.obj");
+	
+
+	sillon2 = Model();
+	sillon2.LoadModel("Models/sillon2.obj");
+
+	espada = Model();
+	espada.LoadModel("Models/espada.obj");
+
+
+	mentita = Model();
+	mentita.LoadModel("Models/mentita.obj");
+
+	mano = Model();
+	mano.LoadModel("Models/manomentita.obj");
+
+	mesa = Model();
+	mesa.LoadModel("Models/mesa.obj");
+
+
+	corona = Model();
+	corona.LoadModel("Models/corona.obj");
+
+	// cuarto 2
+	lampara = Model();
+	lampara.LoadModel("Models/lampara.obj");
+
+	guitar = Model();
+	guitar.LoadModel("Models/guitar.obj");
+
+	bmo = Model();
+	bmo.LoadModel("Models/bmo.obj");
+
+	refri = Model();
+	refri.LoadModel("Models/refri.obj");
+
+	radio = Model();
+	radio.LoadModel("Models/radio.obj");
 
 	std::vector<std::string> skyboxFaces;
 	skyboxFaces.push_back("Textures/Skybox/sp2_rt.png");
@@ -492,8 +557,11 @@ int main()
 
 	//luz direccional, sólo 1 y siempre debe de existir
 	mainLight = DirectionalLight(1.0f, 1.0f, 1.0f,
-		0.3f, 0.3f,
+		0.8f, 0.5f,
 		0.0f, 0.0f, -1.0f);
+
+
+
 	//contador de luces puntuales
 	unsigned int pointLightCount = 0;
 	//Declaración de primer luz puntual
@@ -532,51 +600,34 @@ int main()
 	movOffset = 0.01f;
 	rotllanta = 0.0f;
 	rotllantaOffset = 10.0f;
+	rotpuerta = 0.0f;
+	rotpuertaOffset = 1.0f;
+	despuerta = 0.0f;
+	despuertaOffset = 0.066f;
+	anguloEspada = 0.0f;        // ángulo actual
+	velocidad = 2.0f;    // grados por segundo (ajústalo)
+
+
+
 	glm::vec3 posblackhawk = glm::vec3(2.0f, 0.0f, 0.0f);
 	
 	//---------PARA TENER KEYFRAMES GUARDADOS NO VOLATILES QUE SIEMPRE SE UTILIZARAN SE DECLARAN AQUÍ
 
 
-	loadKeyFrames("keyframes.txt");
-
-	//KeyFrame[0].movAvion_x = 0.0f;
-	//KeyFrame[0].movAvion_y = 0.0f;
-	//KeyFrame[0].giroAvion = 0;
+	//loadKeyFrames("keyframes.txt");
 
 
-	//KeyFrame[1].movAvion_x = -2.0f;
-	//KeyFrame[1].movAvion_y = 4.0f;
-	//KeyFrame[1].giroAvion = 0;
-
-
-	//KeyFrame[2].movAvion_x = -4.0f;
-	//KeyFrame[2].movAvion_y = 0.0f;
-	//KeyFrame[2].giroAvion = 0;
-
-
-	//KeyFrame[3].movAvion_x = -6.0f;
-	//KeyFrame[3].movAvion_y = -4.0f;
-	//KeyFrame[3].giroAvion = 0;
-
-
-	//KeyFrame[4].movAvion_x = -8.0f;
-	//KeyFrame[4].movAvion_y = 0.0f;
-	//KeyFrame[4].giroAvion = 0.0f;
-
-	//KeyFrame[5].movAvion_x = -10.0f;
-	//KeyFrame[5].movAvion_y = 4.0f;
-	//KeyFrame[5].giroAvion = 0.0f;
 	
 	//Se agregan nuevos frames 
 
-
-	printf("\nTeclas para uso de Keyframes:\n1.-Presionar barra espaciadora para reproducir animacion.\n2.-Presionar 0 para volver a habilitar reproduccion de la animacion\n");
+	/*printf("\nTeclas para uso de Keyframes:\n1.-Presionar barra espaciadora para reproducir animacion.\n2.-Presionar 0 para volver a habilitar reproduccion de la animacion\n");
 	printf("3.-Presiona L para guardar frame\n4.-Presiona P para habilitar guardar nuevo frame\n5.-Presiona 1 para mover en X\n6.-Presiona 2 para mover en X negativa");
 	printf("\n7.-Presiona 3 para mover en Y\n8.-Presiona 4 para mover en Y negativa\n9.-Presiona 5 para rotar en eje Y 10 grados\n10.-Presiona 6 para habilitar mover de nuevo");
-	printf("\n11.-Presiona 7 para guardar los frames en el archivo txt\n12.-Presiona 8 para habilitar guardar frames en archivo txt\n");
+	printf("\n11.-Presiona 7 para guardar los frames en el archivo txt\n12.-Presiona 8 para habilitar guardar frames en archivo txt\n");*/
 
 		glm::mat4 model(1.0);
 		glm::mat4 modelaux(1.0);
+		glm::mat4 modelaux2(1.0);
 		glm::vec3 color = glm::vec3(1.0f, 1.0f, 1.0f);
 		glm::vec2 toffset = glm::vec2(0.0f, 0.0f);
 		glm::vec3 lowerLight = glm::vec3(0.0f,0.0f,0.0f);
@@ -589,13 +640,9 @@ int main()
 		lastTime = now;
 
 		angulovaria += 0.5f*deltaTime;
+		
 
-		if (movCoche < 30.0f)
-		{
-			movCoche -= movOffset * deltaTime;
-			//printf("avanza%f \n ",movCoche);
-		}
-		rotllanta += rotllantaOffset * deltaTime;
+		
 
 
 		//Recibir eventos del usuario
@@ -640,6 +687,7 @@ int main()
 
 		model=glm::mat4(1.0);
 		modelaux= glm::mat4(1.0);
+		modelaux2 = glm::mat4(1.0);
 		color = glm::vec3(1.0f, 1.0f, 1.0f);
 		toffset = glm::vec2(0.0f, 0.0f);
 		
@@ -656,77 +704,144 @@ int main()
 		meshList[2]->RenderMesh();
 
 
-		//Instancia del coche 
-		model = glm::mat4(1.0);
-		model = glm::translate(model, glm::vec3(movCoche-50.0f, 0.5f, -2.0f));
-		modelaux = model;
-		model = glm::scale(model, glm::vec3(0.5f, 0.5f, 0.5f));
-		model = glm::rotate(model, -90 * toRadians, glm::vec3(0.0f, 1.0f, 0.0f));
-		glUniformMatrix4fv(uniformModel, 1, GL_FALSE, glm::value_ptr(model));
-		Kitt_M.RenderModel();
 
-		//Llanta delantera izquierda
-		model = modelaux;
-		model = glm::translate(model, glm::vec3(7.0f, -0.5f, 8.0f));
-		model = glm::rotate(model, -90 * toRadians, glm::vec3(0.0f, 1.0f, 0.0f));
-		model = glm::rotate(model, rotllanta * toRadians, glm::vec3(1.0f, 0.0f, 0.0f));
-		model = glm::scale(model, glm::vec3(0.4f, 0.4f, 0.4f));
-		color = glm::vec3(0.5f, 0.5f, 0.5f);//llanta con color gris
-		glUniform3fv(uniformColor, 1, glm::value_ptr(color));
-		glUniformMatrix4fv(uniformModel, 1, GL_FALSE, glm::value_ptr(model));
-		Llanta_M.RenderModel();
-
-		//Llanta trasera izquierda
-		model = modelaux;
-		model = glm::translate(model, glm::vec3(15.5f, -0.5f, 8.0f));
-		model = glm::rotate(model, -90 * toRadians, glm::vec3(0.0f, 1.0f, 0.0f));
-		model = glm::rotate(model, rotllanta * toRadians, glm::vec3(1.0f, 0.0f, 0.0f));
-		model = glm::scale(model, glm::vec3(0.4f, 0.4f, 0.4f));
-		glUniformMatrix4fv(uniformModel, 1, GL_FALSE, glm::value_ptr(model));
-		Llanta_M.RenderModel();
-
-		//Llanta delantera derecha
-		model = modelaux;
-		model = glm::translate(model, glm::vec3(7.0f, -0.5f, 1.5f));
-		model = glm::rotate(model, 90 * toRadians, glm::vec3(0.0f, 1.0f, 0.0f));
-		model = glm::rotate(model, -rotllanta * toRadians, glm::vec3(1.0f, 0.0f, 0.0f));
-		model = glm::scale(model, glm::vec3(0.4f, 0.4f, 0.4f));
-		glUniformMatrix4fv(uniformModel, 1, GL_FALSE, glm::value_ptr(model));
-		Llanta_M.RenderModel();
-
-		//Llanta trasera derecha
-		model = modelaux;
-		model = glm::translate(model, glm::vec3(15.5f, -0.5f, 1.5f));
-		model = glm::rotate(model, 90 * toRadians, glm::vec3(0.0f, 1.0f, 0.0f));
-		model = glm::rotate(model, -rotllanta * toRadians, glm::vec3(1.0f, 0.0f, 0.0f));
-		model = glm::scale(model, glm::vec3(0.4f, 0.4f, 0.4f));
-		glUniformMatrix4fv(uniformModel, 1, GL_FALSE, glm::value_ptr(model));
-		Llanta_M.RenderModel();
-
-
-		model = glm::mat4(1.0);
-		posblackhawk=glm::vec3(posXavion + movAvion_x, posYavion + movAvion_y, posZavion);
-		model = glm::translate(model, posblackhawk);
-		model = glm::scale(model, glm::vec3(0.3f, 0.3f, 0.3f));
-		model = glm::rotate(model, giroAvion * toRadians, glm::vec3(0.0f, 1.0f, 0.0f));
-		model = glm::rotate(model, -90 * toRadians, glm::vec3(1.0f, 0.0f, 0.0f));
-		model = glm::rotate(model, 90 * toRadians, glm::vec3(0.0f, 0.0f, 1.0f));
-		Material_brillante.UseMaterial(uniformSpecularIntensity, uniformShininess);
-		//color = glm::vec3(0.0f, 1.0f, 0.0f);
-		//glUniform3fv(uniformColor, 1, glm::value_ptr(color));
-		glUniformMatrix4fv(uniformModel, 1, GL_FALSE, glm::value_ptr(model));
-		Blackhawk_M.RenderModel();
-		
-		//Llanta trasera derecha
+		//Casa
 		model = glm::mat4(1.0);
 		model = glm::translate(model, glm::vec3(15.5f, 5.5f, 1.5f));
-		//model = glm::rotate(model, 90 * toRadians, glm::vec3(0.0f, 1.0f, 0.0f));
-		//model = glm::rotate(model, -rotllanta * toRadians, glm::vec3(1.0f, 0.0f, 0.0f));
-		/*model = glm::scale(model, glm::vec3(0.4f, 0.4f, 0.4f));*/
+		modelaux = model;
 		glUniformMatrix4fv(uniformModel, 1, GL_FALSE, glm::value_ptr(model));
 		casa.RenderModel();
 
+
+		// Movimiento rotacion 
+		if (mainWindow.getMover()) {
+			if (rotpuerta > -90.0f)
+			{
+				rotpuerta -= rotpuertaOffset * deltaTime;
+
+			}
+		}
+		else {
+			if (rotpuerta < 0.0f)
+			{
+				rotpuerta += rotpuertaOffset * deltaTime;
+
+			}
+		}
+
+
+
+		//Puerta 1
+		model = modelaux;
+		model = glm::translate(model, glm::vec3(-1.7f, -3.1f, -20.0f));
+		model = glm::rotate(model, rotpuerta * toRadians, glm::vec3(0.0f, 1.0f, 0.0f));
+		glUniformMatrix4fv(uniformModel, 1, GL_FALSE, glm::value_ptr(model));
+		puerta.RenderModel();
+
+		//Puerta 2
+		model = modelaux;
+		model = glm::translate(model, glm::vec3(-1.7f, -3.45f, 0.0f));
+		model = glm::rotate(model, rotpuerta * toRadians, glm::vec3(0.0f, 1.0f, 0.0f));
+		glUniformMatrix4fv(uniformModel, 1, GL_FALSE, glm::value_ptr(model));
+		puerta.RenderModel();
+
+
+		/////////		Cuarto 1	///////////
+
+		anguloEspada += velocidad * deltaTime;
+		if (anguloEspada >= 360.0f) {
+			anguloEspada -= 360.0f;   // reinicia suave, sin saltos
+		}
+
+
+		//Espada
+		model = modelaux;
+		model = glm::translate(model, glm::vec3(6.8f, 0.5f, 5.5f));
+		model = glm::translate(model, glm::vec3(0.0f, 0.0 + 0.5 * sin(glm::radians(2 * angulovaria)), 6.0));
+		model = glm::rotate(model, anguloEspada * toRadians, glm::vec3(0.0f, 1.0f, 0.0f));
+		glUniformMatrix4fv(uniformModel, 1, GL_FALSE, glm::value_ptr(model));
+		espada.RenderModel();
+
+		//Corona
+		model = modelaux;
+		model = glm::translate(model, glm::vec3(3.8f, -2.0f, 5.5f));
+		model = glm::rotate(model, 90 * toRadians, glm::vec3(0.0f, 1.0f, 0.0f));
+		glUniformMatrix4fv(uniformModel, 1, GL_FALSE, glm::value_ptr(model));
+		corona.RenderModel();
+
+
+		//Mesa
+		model = modelaux;
+		model = glm::translate(model, glm::vec3(3.5f, -2.65f, 5.5f));
+		model = glm::scale(model, glm::vec3(0.6f, 0.6f, 0.6f));
+		glUniformMatrix4fv(uniformModel, 1, GL_FALSE, glm::value_ptr(model));
+		mesa.RenderModel();
+
+
+		//Mentita
+		model = modelaux;
+		model = glm::translate(model, glm::vec3(-4.8f, -4.9f, 11.5f));
+		glUniformMatrix4fv(uniformModel, 1, GL_FALSE, glm::value_ptr(model));
+		mentita.RenderModel();
+
+
+		//Sillon cuarto 1
+		model = modelaux;
+		model = glm::translate(model, glm::vec3(0.0f, -3.9f, 18.8f));
+		model = glm::scale(model, glm::vec3(65.0f, 70.0f, 65.0f));
+		glUniformMatrix4fv(uniformModel, 1, GL_FALSE, glm::value_ptr(model));
+		sillon2.RenderModel();
+
+
+		/////////		Cuarto 2	///////////
+
+
+		//Mesa para lampara
+		model = modelaux;
+		model = glm::translate(model, glm::vec3(4.3f, -3.8f, -17.5f));
+		model = glm::scale(model, glm::vec3(0.3f, 0.3f, 0.15f));
+		glUniformMatrix4fv(uniformModel, 1, GL_FALSE, glm::value_ptr(model));
+		mesa.RenderModel();
+
+		//Lampara
+		model = modelaux;
+		model = glm::translate(model, glm::vec3(4.3f, -3.5f, -17.5f));
+		glUniformMatrix4fv(uniformModel, 1, GL_FALSE, glm::value_ptr(model));
+		lampara.RenderModel();
+
 		
+		//Guitarra
+		model = modelaux;
+		model = glm::translate(model, glm::vec3(5.0f, -3.95f, -10.5f));
+		model = glm::rotate(model, 90 * toRadians, glm::vec3(0.0f, 1.0f, 0.0f));
+		model = glm::rotate(model, 20 * toRadians, glm::vec3(1.0f, 0.0f, 0.0f));
+		glUniformMatrix4fv(uniformModel, 1, GL_FALSE, glm::value_ptr(model));
+		guitar.RenderModel();
+
+
+		//Bmo
+		model = modelaux;
+		model = glm::translate(model, glm::vec3(-3.0f, -2.73f, -10.0f));
+		model = glm::rotate(model, 135 * toRadians, glm::vec3(0.0f, 1.0f, 0.0f));
+		model = glm::scale(model, glm::vec3(0.4f, 0.4f, 0.4f));
+		glUniformMatrix4fv(uniformModel, 1, GL_FALSE, glm::value_ptr(model));
+		bmo.RenderModel();
+
+		//Refri
+		model = modelaux;
+		model = glm::translate(model, glm::vec3(4.7f, -4.95f, -2.5f));
+		model = glm::scale(model, glm::vec3(1.5f, 1.5f, 1.5f));
+		glUniformMatrix4fv(uniformModel, 1, GL_FALSE, glm::value_ptr(model));
+		refri.RenderModel();
+
+		//Radio
+		model = modelaux;
+		model = glm::translate(model, glm::vec3(1.2f, -14.75f, -17.5f));
+		model = glm::rotate(model, 90 * toRadians, glm::vec3(0.0f, 1.0f, 0.0f));
+		model = glm::scale(model, glm::vec3(1.5f, 1.5f, 1.5f));
+		glUniformMatrix4fv(uniformModel, 1, GL_FALSE, glm::value_ptr(model));
+		radio.RenderModel();
+
 		glUseProgram(0);
 
 		mainWindow.swapBuffers();
